@@ -4,9 +4,12 @@ This is a SSH login tool
 ## Linux ssh 登陆工具:
 
 ### 一.说明
-
+- 命令行直接so
 - 支持秘密和密钥两种格式
 - 用户名和密码都是写文件的,明文保存
+- 效果图:
+
+![image](http://pqhvjjqev.bkt.clouddn.com/img/20190430214133.png)
 
 ### 二.安装
 
@@ -77,3 +80,4 @@ ssh:
 chmod 400 ~/.so/keys/*
 
 ```
+
