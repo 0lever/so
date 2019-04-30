@@ -8,7 +8,17 @@ This is a SSH login tool
 - 支持秘密和密钥两种格式
 - 用户名和密码都是写文件的,明文保存
 
-### 二.配置
+### 二.安装
+
+```
+pip install --upgrade 0lever-so
+or
+pip install --upgrade 0lever-so -i https://pypi.org/simple/
+
+```
+
+
+### 三.配置
 - 配置文件:
 ```
 so_install

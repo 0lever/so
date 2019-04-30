@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(name='0lever-so',
 
-      version="1.0.8",
+      version="1.0.9",
 
       url='https://github.com/0lever/so',
 

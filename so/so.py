@@ -6,6 +6,9 @@ import yaml
 import os
 import shutil
 import time
+import termios
+import struct
+import fcntl
 
 password_yaml = """ssh: 
   - id: 1
@@ -32,6 +35,19 @@ xxxxx
 -----END RSA PRIVATE KEY-----
 """
 
+child = None
+termios_size = None
+def _sigwinch_passthrough(sig, data):
+    global child,termios_size
+    if 'TIOCGWINSZ' in dir(termios):
+        TIOCGWINSZ = termios.TIOCGWINSZ
+    else:
+        TIOCGWINSZ = 1074295912
+    s = struct.pack("HHHH", 0, 0, 0, 0)
+    a = struct.unpack('HHHH', fcntl.ioctl(sys.stdout.fileno(), TIOCGWINSZ, s))
+    termios_size = a
+    if child is not None:
+        child.setwinsize(a[0], a[1])
 
 
 def _exit(*args, **kwargs):
@@ -51,6 +67,7 @@ def _get_hosts_by_config():
         return
 
 def _login_ssh(user, password, host, port):
+    global child
     if password.endswith('.pem'):
         child = pexpect.spawn('ssh %s@%s -p %s -i %s' % (user, host, port, password))
     else:
@@ -73,6 +90,10 @@ def _login_ssh(user, password, host, port):
         return
     print('Login Success!')
     child.sendline('')
+    _sigwinch_passthrough(None,None)
+    if termios_size is not None:
+        child.setwinsize(termios_size[0], termios_size[1])
+
     child.interact()
 
 def _print_head():
@@ -110,6 +131,7 @@ def run():
     # 信号
     signal.signal(signal.SIGINT, _exit)
     signal.signal(signal.SIGTERM, _exit)
+    signal.signal(signal.SIGWINCH, _sigwinch_passthrough)
     _print_head()
     while True:
         _print_host_list(config_host_list)
@@ -133,8 +155,5 @@ def run_install():
         f.write(password_yaml)
     with open(os.path.join(so_dir, "keys", 'demo.pem'), 'w') as f:
         f.write(password_yaml)
-
-
-
 
 
