@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(name='0lever-so',
 
-      version="1.0.9",
+      version="1.1.0",
 
       url='https://github.com/0lever/so',
 
@@ -12,13 +12,13 @@ setup(name='0lever-so',
 
       author_email='yc.fqiyou@gmail.com',
 
-      description=u'跳板机登录脚本',
+      description=u'服务器登录工具',
 
       install_requires=["pyyaml", "pexpect"],
 
       packages=find_packages(),
 
-      long_description=open('README.md').read(),
+      long_description=open('README.rst').read(),
 
       package_data={
       },
