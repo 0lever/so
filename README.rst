@@ -55,3 +55,46 @@ Usage
         host: 1.1.1.1
         port: 22
 
+
+Other-shell
+=====
+
+::
+
+    #!/usr/bin/expect
+    set USER "xxx"
+    set PASSWD "xxx"
+    set timeout 10
+
+    trap {
+        set rows [stty rows]
+        set cols [stty columns]
+        stty rows $rows columns $cols < $spawn_out(slave,name)
+    } WINCH
+    spawn su - $USER
+    expect "Password: "
+    send "$PASSWD\n"
+    interact
+
+::
+
+    #!/usr/bin/expect -f
+    set HOST [lindex $argv 0]
+    set USER [lindex $argv 1]
+    set PASSWD [lindex $argv 2]
+    set PORT [lindex $argv 3]
+    set timeout 10
+
+    trap {
+        set rows [stty rows]
+        set cols [stty columns]
+        stty rows $rows columns $cols < $spawn_out(slave,name)
+    } WINCH
+
+    spawn ssh $USER@HOST -p $PORT
+    expect {
+        "*yes/no" {send "yes\r"; exp_continue}
+        "*password:" {send "$PASSWD\r"}
+    }
+    interact
+    ```

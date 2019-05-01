@@ -52,6 +52,8 @@ def _sigwinch_passthrough(sig, data):
 
 def _exit(*args, **kwargs):
     print('You choose to stop so.')
+    if child is not None:
+        child.close()
     sys.exit(1)
 
 
@@ -60,7 +62,7 @@ def _get_hosts_by_config():
         so_dir = os.path.join(os.path.expanduser('~'), ".so")
         password_yaml_file = os.path.join(so_dir, "password.yaml")
         keys_dir = os.path.join(so_dir, "keys")
-        return yaml.load(open(password_yaml_file, 'r').read())["ssh"], keys_dir
+        return yaml.load(open(password_yaml_file, 'r').read(), Loader=yaml.Loader)["ssh"], keys_dir
     except Exception as e:
         print("获取配置文件错误", e)
         exit(1)
@@ -107,6 +109,18 @@ def _print_underline():
 def _print_remind():
     print("[*] 选择主机:")
 
+def _get_cmd_args():
+    remind = "[*] 选择主机:"
+    args = ""
+    if 2 == sys.version_info[0]:
+        args = raw_input(remind)
+    elif 3 == sys.version_info[0]:
+        args = input(remind)
+    else:
+        _print_remind()
+        args = sys.stdin.readline()
+    return str(args).replace("\n", "")
+
 
 def _print_host_list(host_list):
     _print_underline()
@@ -135,11 +149,13 @@ def run():
     _print_head()
     while True:
         _print_host_list(config_host_list)
-        _print_remind()
-        cmd_args = sys.stdin.readline().replace("\n", "")
+        # _print_remind()
+        # cmd_args = sys.stdin.readline().replace("\n", "")
+        cmd_args = _get_cmd_args()
         if cmd_args in config_host_map:
             _login(config_host_map[cmd_args], key_dir)
         elif cmd_args == "q" or cmd_args == "exit" or cmd_args == "quit":
+            _exit()
             return
         else:
             print("未知参数:%s" % cmd_args)
@@ -155,5 +171,3 @@ def run_install():
         f.write(password_yaml)
     with open(os.path.join(so_dir, "keys", 'demo.pem'), 'w') as f:
         f.write(password_yaml)
-
-
