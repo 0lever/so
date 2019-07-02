@@ -9,6 +9,7 @@ import time
 import termios
 import struct
 import fcntl
+import pyotp
 
 password_yaml = """ssh: 
   - id: 1
@@ -64,9 +65,43 @@ def _get_hosts_by_config():
         keys_dir = os.path.join(so_dir, "keys")
         return yaml.load(open(password_yaml_file, 'r').read(), Loader=yaml.Loader)["ssh"], keys_dir
     except Exception as e:
-        print("获取配置文件错误", e)
+        print(u"获取配置文件错误", e)
         exit(1)
         return
+
+def _OAuth_login_ssh(user, password, host, port):
+    global child
+    child = pexpect.spawn('ssh %s@%s -p %s' % (user, host, port))
+    i = child.expect(['nodename nor servname provided', 'Connection refused'
+                         , pexpect.TIMEOUT
+                         , '[Pp]assword:'
+                         , 'continue connecting (yes/no)?'
+                         , '#', '~'
+                         , '请输入 OAuth 二次验证码'
+                      ])
+    if i <= 2:
+        print(child.before, child.after)
+        return
+    elif i == 3:
+        child.sendline(password)
+    elif i == 4:
+        child.sendline('yes')
+        key = str(pyotp.TOTP(password))
+        child.sendline(key)
+    elif i in (5, 6):
+        pass
+    elif i == 7:
+        key = str(pyotp.TOTP(password))
+        child.sendline(key)
+    else:
+        print(i)
+        print(child.before, child.after)
+        return
+    print('Login Success!')
+    child.sendline('')
+    child.interact()
+    pass
+
 
 def _login_ssh(user, password, host, port):
     global child
@@ -74,7 +109,12 @@ def _login_ssh(user, password, host, port):
         child = pexpect.spawn('ssh %s@%s -p %s -i %s' % (user, host, port, password))
     else:
         child = pexpect.spawn('ssh %s@%s -p %s' % (user, host, port))
-    i = child.expect(['nodename nor servname provided', 'Connection refused', pexpect.TIMEOUT, '[Pp]assword:', 'continue connecting (yes/no)?', '#'])
+    i = child.expect(['nodename nor servname provided', 'Connection refused'
+                         , pexpect.TIMEOUT
+                         , '[Pp]assword:'
+                         , 'continue connecting (yes/no)?'
+                         , '#', '~'
+                      ])
     if i <= 2:
         print(child.before, child.after)
         return
@@ -84,7 +124,7 @@ def _login_ssh(user, password, host, port):
         child.sendline('yes')
         child.expect('[Pp]assword:')
         child.sendline(password)
-    elif i == 5:
+    elif i in (5, 6):
         pass
     else:
         print(i)
@@ -135,9 +175,13 @@ def _login(info, keys_dir):
     password = info["password"]
     host = info["host"]
     port = info["port"]
-    if password.endswith('.pem'):
-        password = os.path.join(keys_dir,password)
-    _login_ssh(user=user, password=password, host=host, port=port)
+
+    if info.has_key("key_type") and info["key_type"] == "OAuth":
+        _OAuth_login_ssh(user=user, password=password, host=host, port=port)
+    else:
+        if password.endswith('.pem'):
+            password = os.path.join(keys_dir, password)
+        _login_ssh(user=user, password=password, host=host, port=port)
 
 def run():
     config_host_list, key_dir = _get_hosts_by_config()
