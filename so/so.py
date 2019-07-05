@@ -86,12 +86,12 @@ def _OAuth_login_ssh(user, password, host, port):
         child.sendline(password)
     elif i == 4:
         child.sendline('yes')
-        key = str(pyotp.TOTP(password))
+        key = str(pyotp.TOTP(password).now())
         child.sendline(key)
     elif i in (5, 6):
         pass
     elif i == 7:
-        key = str(pyotp.TOTP(password))
+        key = str(pyotp.TOTP(password).now())
         child.sendline(key)
     else:
         print(i)
@@ -99,6 +99,9 @@ def _OAuth_login_ssh(user, password, host, port):
         return
     print('Login Success!')
     child.sendline('')
+    _sigwinch_passthrough(None, None)
+    if termios_size is not None:
+        child.setwinsize(termios_size[0], termios_size[1])
     child.interact()
     pass
 
