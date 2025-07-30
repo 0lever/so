@@ -178,8 +178,7 @@ def _login(info, keys_dir):
     password = info["password"]
     host = info["host"]
     port = info["port"]
-
-    if info.has_key("key_type") and info["key_type"] == "OAuth":
+    if "key_type" in info.keys() and info["key_type"] == "OAuth":
         _OAuth_login_ssh(user=user, password=password, host=host, port=port)
     else:
         if password.endswith('.pem'):
