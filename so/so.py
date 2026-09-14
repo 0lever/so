@@ -72,10 +72,10 @@ def _login_ssh(user, password, host, port, oauth=False):
     global child
     password = str(password)
     if password.endswith('.pem'):
-        child = pexpect.spawn('ssh %s@%s -p %s -i %s' % (user, host, port, password))
+        child = pexpect.spawn('ssh %s@%s -p %s -i %s -o StrictHostKeyChecking=accept-new' % (user, host, port, password))
     elif password == '':
         # 免密登陆，仅使用公钥认证
-        child = pexpect.spawn('ssh %s@%s -p %s -o BatchMode=yes -o PreferredAuthentications=publickey' % (user, host, port))
+        child = pexpect.spawn('ssh %s@%s -p %s -o BatchMode=yes -o PreferredAuthentications=publickey -o StrictHostKeyChecking=accept-new' % (user, host, port))
     else:
         child = pexpect.spawn('ssh %s@%s -p %s' % (user, host, port))
     patterns = ['nodename nor servname provided', 'Connection refused'
