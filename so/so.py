@@ -85,7 +85,16 @@ def _login_ssh(user, password, host, port, oauth=False):
                 , '#', '~', 'Welcome']
     if oauth:
         patterns.append('请输入 OAuth 二次验证码')
-    i = child.expect(patterns)
+    try:
+        i = child.expect(patterns)
+    except pexpect.EOF:
+        before = child.before
+        if isinstance(before, bytes):
+            before = before.decode('utf-8', 'replace')
+        print(before)
+        print('连接被远端关闭')
+        child.close()
+        return
     if i <= 2:
         print(child.before, child.after)
         return
