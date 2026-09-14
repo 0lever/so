@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 
 setup(name='0lever-so',
 
-      version="1.2.0",
+      version="2.0.1",
 
       url='https://github.com/0lever/so',
 
@@ -32,13 +32,10 @@ setup(name='0lever-so',
 
 )
 
-# source activate execpython
-# python setup.py sdist
-# python setup.py install
-# python setup.py bdist_wheel/python setup.py sdist
-# python setup.py bdist_wheel upload -r coohua
-# python setup.py bdist_wheel upload -r pypi
+# pip install build twine
+# python -m build            # 生成 dist/ 下的 sdist 和 wheel
+# twine upload dist/* -r coohua
+# twine upload dist/* -r pypi
 # pip install --upgrade 0lever-so -i https://pypi.org/simple/
 
-# /usr/local/app/application/anaconda/anaconda2/envs/python36/bin/python  setup.py bdist_wheel upload -r pypi
-# /usr/local/app/application/anaconda/anaconda2/envs/python-tools/bin/python  setup.py bdist_wheel upload -r pypi
+# python -m build && twine upload dist/* -r pypi
