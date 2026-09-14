@@ -1,0 +1,49 @@
+setup.py
+  s_a63424a1493690::t_6f769d165f3b38 35-36,41
+  s_a63424a1493690::t_5bf365bb007646 37-38
+  h_aee4ff0ce40fcf 7
+so/so.py
+  s_a63424a1493690::t_1f4ed626bba366 71,81-84,86-88,96,98-102,107-108,115
+  s_a63424a1493690::t_e720adf8a0baa6 97,106
+  s_a63424a1493690::t_21cfc5e7be9bd7 85,103,105
+  s_a63424a1493690::t_f292471480c2c3 158
+  s_a63424a1493690::t_5af4ee187e81c6 73
+  s_a63424a1493690::t_0f54db8ca66363 165-166
+  s_a63424a1493690::t_ef8e31c4c8e04c 60,63
+  s_a63424a1493690::t_07b1ebdaac6864 76-78
+  s_a63424a1493690::t_4551e2ee6be03e 160-161
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.2",
+  "base_commit_sha": "d9744043440e0611c42356ee2ae9d1f0a27ca6e4",
+  "prompts": {},
+  "humans": {
+    "h_aee4ff0ce40fcf": {
+      "author": "Chao Yang <chaoyang@ChaodeMacBook-Pro.local>"
+    }
+  },
+  "sessions": {
+    "s_a63424a1493690": {
+      "agent_id": {
+        "tool": "trae",
+        "id": "6aa7ab53eec72f365e4f5e84",
+        "model": "glm-5.3-flash__dev"
+      },
+      "human_author": "Chao Yang <chaoyang@ChaodeMacBook-Pro.local>",
+      "custom_attributes": {
+        "client_type": "ide",
+        "runtime_client": "trae-tob-git-ai",
+        "external_session_id": "6aa7ab53eec72f365e4f5e84",
+        "edit_kind": "file_edit",
+        "dedupe_key": "6aa7ab53eec72f365e4f5e84:6aa7b1adeec72f365e4f5f4a:afterEdit:5e7e771e",
+        "session_id": "6aa7ab53eec72f365e4f5e84",
+        "source_scene": "unknown",
+        "operation_id": "6aa7b1adeec72f365e4f5f4a",
+        "tool_id": "Edit",
+        "tool_use_id": "6aa7b1adeec72f365e4f5f4a",
+        "tool_type": "agent"
+      }
+    }
+  }
+}
